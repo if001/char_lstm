@@ -1,0 +1,8 @@
+__pycache__/
+data/*.npz
+!data/.gitkeep
+models/__pycache__/
+log/*
+!log/.gitkeep
+weight/*
+!weight/.gitkeep
