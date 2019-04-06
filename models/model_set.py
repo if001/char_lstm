@@ -1,3 +1,4 @@
+import numpy as np
 from keras.layers import Input, Dense, Conv2D, LSTM, ReLU, Dropout, BatchNormalization, Concatenate
 
 from keras.layers.wrappers import Bidirectional as BD
@@ -13,7 +14,6 @@ from keras.initializers import RandomUniform
 import os
 import sys
 sys.path.append("../")
-import numpy as np
 
 
 class ModelSet():
@@ -90,13 +90,16 @@ class ModelSet():
         return x
 
     def simple_lstm(self):
-        hidden_dim = 64
+        hidden_dim = 256
         input_sentence = Input(shape=(None, self.input_shape))
         x = BatchNormalization()(input_sentence)
         x = LSTM(hidden_dim, return_sequences=True)(x)
         x = Dropout(0.4)(x)
         x = LSTM(hidden_dim, return_sequences=True)(x)
-        x = BatchNormalization()(x)
+        # x = BatchNormalization()(x)
+        x = Dropout(0.4)(x)
+        x = LSTM(hidden_dim, return_sequences=True)(x)
+        # x = BatchNormalization()(x)
         x = Dropout(0.4)(x)
         # output_sentence = LSTM(self.input_shape,
         #                        return_sequences=True,

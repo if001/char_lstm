@@ -6,3 +6,4 @@ log/*
 !log/.gitkeep
 weight/*
 !weight/.gitkeep
+./.DS_Store
