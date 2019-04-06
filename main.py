@@ -1,5 +1,4 @@
 from w2v_opts import W2vOpts
-
 from data_loader import DataLoader
 from net_mng import NetMng
 from models.model_set import ModelSet
@@ -17,10 +16,10 @@ def preprocessing(is_load=False):
         w2v_opts,
         # "./data/files_all_rnp.txt",
         # "./data/files_all_rnp.npz",
-        "./data/files_all_rnp_10000.txt",
-        "./data/files_all_rnp_10000.npz",
-        # "./data/test.txt",
-        # "./data/test.npz",
+        # "./data/files_all_rnp_10000.txt",
+        # "./data/files_all_rnp_10000.npz",
+        "./data/test.txt",
+        "./data/test.npz",
         is_load=is_load)
     if is_load is False:
         print("train end")
