@@ -60,7 +60,7 @@ class ModelSet():
     def __my_init(self):
         return RandomUniform(minval=-5, maxval=5, seed=None)
 
-    def __route1(self, inp):
+    def __large_value_route(self, inp):
         x = Dense(256)(inp)
         x = BatchNormalization()(x)
         x = ReLU()(x)
@@ -71,10 +71,10 @@ class ModelSet():
         x = Dropout(0.4)(x)
         x = Dense(
             1024,
-            activation=self.__my_tanh)(x)
+            activation="tanh")(x)
         return x
 
-    def __route2(self, inp):
+    def __small_value_route(self, inp):
         x = Dense(256)(inp)
         x = BatchNormalization()(x)
         x = ReLU()(x)
@@ -85,40 +85,30 @@ class ModelSet():
         x = Dropout(0.4)(x)
         x = Dense(
             1024,
-            activation=self.__my_tanh2,
+            activation=self.__my_tanh,
             kernel_initializer=self.__my_init())(x)
         return x
 
     def simple_lstm(self):
         hidden_dim = 256
         input_sentence = Input(shape=(None, self.input_shape))
-        x = BatchNormalization()(input_sentence)
-        x = LSTM(hidden_dim, return_sequences=True)(x)
-        x = Dropout(0.4)(x)
-        x = LSTM(hidden_dim, return_sequences=True)(x)
-        # x = BatchNormalization()(x)
-        x = Dropout(0.4)(x)
-        x = LSTM(hidden_dim, return_sequences=True)(x)
-        # x = BatchNormalization()(x)
-        x = Dropout(0.4)(x)
-        # output_sentence = LSTM(self.input_shape,
-        #                        return_sequences=True,
-        #                        activation=self.__my_tanh)(x)
-        x = Concatenate()([input_sentence, x])
+        inp = BatchNormalization()(input_sentence)
 
-        # x = Dense(
-        #     256,
-        #     activation='tanh')(x)
-        # x = Dense(
-        #     512,
-        #     activation='tanh')(x)
-        # x = Dense(
-        #     1024,
-        #     activation=self.__my_tanh,
-        #     kernel_initializer=self.__my_init())(x)
-        # x = Dropout(0.4)(x)
-        r1 = self.__route1(x)
-        r2 = self.__route2(x)
+        x = LSTM(hidden_dim, return_sequences=True)(inp)
+        x = Dropout(0.4)(x)
+
+        x = LSTM(hidden_dim, return_sequences=True)(x)
+        out1 = Dropout(0.4)(x)
+
+        x = Concatenate()([inp, out1])
+
+        x = LSTM(hidden_dim, return_sequences=True)(x)
+        x = Dropout(0.4)(x)
+
+        x = Dense(hidden_dim)(x)
+
+        r1 = self.__large_value_route(x)
+        r2 = self.__small_value_route(x)
         x = Concatenate()([r1, r2])
 
         output_sentence = Dense(self.input_shape, activation="linear")(x)
